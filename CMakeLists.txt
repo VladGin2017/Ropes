@@ -3,13 +3,12 @@ PROJECT (LCKERNEL)
 
 # SOURCE FILES
 set(srcs
-Rope.c
+src/Rope.c
 )
 
 # HEADER FILES
 set(hdrs
-Rope.h
+src/Rope.h
 )
 
 add_executable(Rope ${srcs} ${hdrs})
-

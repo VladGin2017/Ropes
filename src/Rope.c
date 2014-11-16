@@ -40,7 +40,6 @@ Rope* ConCat(Rope* R1, Rope* R2) {
     return NewRope(tmp);
 }
 
-
 Rope* Rebalance(Rope* R) {
     char* rope = String(R);
     return NewRope(rope);
@@ -125,9 +124,6 @@ int main() {
 
     //    INSERTION TEST
     Insert(R, "vv", 0);
-    s(R->Left->Left->Left->Left->Value)
-    d(R->Left->Left->Left->Left->Weight)
-
 
     //      INDEX TEST
     c(Index(R, 3))

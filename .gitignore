@@ -2,3 +2,6 @@ a.out
 .*.*.swp
 .*.*.swo
 *.*~
+CMakeLists.txt.user
+Ropes-build/
+*.*.autosave

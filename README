@@ -6,6 +6,10 @@ Supports,
 
 building a rope
 
-indexing the rope
+Indexing the rope
 
-insert characters to rope.
+Insert characters to rope.
+
+Concatenating Ropes
+
+Splitting a Rope

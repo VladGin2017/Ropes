@@ -29,7 +29,36 @@ char* InsertString(char* string, char* snippet, int loc) {
     return newstring;
 }
 
-Rope Insert(Rope* R, char* c, int pos) {
+char* Split(Rope* R, int s, int e) {
+    return SubString(String(R), s, e);
+}
+
+Rope* ConCat(Rope* R1, Rope* R2) {
+    char* tmp = malloc(sizeof(char) * 2 * (R1->Weight + R2->Weight));
+    strncat(tmp, String(R1), strlen(String(R1)));
+    strncat(tmp, String(R2), strlen(String(R2)));
+    return NewRope(tmp);
+}
+
+
+Rope* Rebalance(Rope* R) {
+    char* rope = String(R);
+    return NewRope(rope);
+}
+
+char* String(Rope* R) {
+    char* strx = malloc(sizeof(char) * 2 * R->Weight);
+
+    if (R->Value == "" && R->Left != NULL) {
+        strncat(strx, String(R->Left), strlen(String(R->Left)));
+    }
+
+    if (R->Value == "" && R->Right != NULL) {
+        strncat(strx, String(R->Right), strlen(String(R->Right)));
+    }
+}
+
+void Insert(Rope* R, char* c, int pos) {
 
     if (R->Weight > pos) {
         if (R->Left != NULL) {
@@ -86,12 +115,26 @@ char Index(Rope* R, int pos) {
 }
 
 int main() {
-    // ROPE BUILDER
-    Rope* R = NewRope("abcdefghijklmnopqrstuvwxyz");
+    //    ROPE BUILDER
+    Rope* R = NewRope("GAGAN");
+    Rope* R2 = NewRope("JYOT");
+    Rope* R3 = ConCat(R, R2);
+
+    //  SPLIT TEST
+    s(Split(R3, 0, 3))
+
+    //    INSERTION TEST
     Insert(R, "vv", 0);
     s(R->Left->Left->Left->Left->Value)
     d(R->Left->Left->Left->Left->Weight)
-    // INDEX TEST
+
+
+    //      INDEX TEST
     c(Index(R, 3))
+    s(Split(R, 1, 2))
+
+    //        STRING TEST
+    char* s = String(R3);
+    printf("%s\n", s);
 }
 

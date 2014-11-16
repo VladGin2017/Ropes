@@ -4,26 +4,33 @@
 typedef struct Rope Rope;
 
 typedef struct Rope {
-    Rope* Left, *Right, *Parent;
+    Rope* Left, *Right;
     int Weight;
     char* Value;
 } Rope;
 
 #define Lim 2
 
-Rope* NewRope(char* str);
+Rope* NewRope(char*);
 
-Rope* Adjust(Rope* R);
+Rope* Adjust(Rope*);
 
 char* SubString(char*, int , int);
 
-Rope Split(Rope*, int , int);
+char* Split(Rope*, int , int);
 
-Rope Insert(Rope* R, char* c, int pos);
+void Insert(Rope*, char*, int);
 
-char* InsertString(char* string, char* snippet, int loc);
+char* InsertString(char*, char*, int);
+
+char Index(Rope*, int);
+
+char* String(Rope*);
+
+Rope* Rebalance(Rope*);
+
+Rope* ConCat(Rope*, Rope*);
 
 #define c(tok) printf("%c\n", tok);
 #define d(tok) printf("%d\n", tok);
 #define s(tok) printf("%s\n", tok);
-

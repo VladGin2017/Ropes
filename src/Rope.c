@@ -48,13 +48,15 @@ Rope* Rebalance(Rope* R) {
 char* String(Rope* R) {
     char* strx = malloc(sizeof(char) * 2 * R->Weight);
 
-    if (R->Value == "" && R->Left != NULL) {
+    if ((strcmp(R->Value, "") == 0)&& R->Left != NULL) {
         strncat(strx, String(R->Left), strlen(String(R->Left)));
     }
 
-    if (R->Value == "" && R->Right != NULL) {
+    if ((strcmp(R->Value, "") == 0) && R->Right != NULL) {
         strncat(strx, String(R->Right), strlen(String(R->Right)));
     }
+
+    return strx;
 }
 
 void Insert(Rope* R, char* c, int pos) {

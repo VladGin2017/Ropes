@@ -15,6 +15,7 @@ void Preorder(Rope *r, visitFunc *f) {
   }
   Preorder(r->Left, f);
   Preorder(r->Right, f);
+  f(r->Value);
   f(r);
 }
 
@@ -186,16 +187,14 @@ int main() {
     fread(S, fsize, 1, f);
     fclose(f);
     Rope* R = NewRope(S);
-    char *str = String(R);
     c(Index(R, 103818668))
       c(Index(R, 103818669))
       c(Index(R, 103818670))
       c(Index(R, 103818671))
-      str;
+      String(R);
     ld(strlen(String(R)));
         s(Split(R, 0, 500))
     free(S);
-    free(str);
         DestoryRope(R);
     return 0;
 }

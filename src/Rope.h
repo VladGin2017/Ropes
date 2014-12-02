@@ -31,6 +31,8 @@ Rope* Rebalance(Rope*);
 
 Rope* ConCat(Rope*, Rope*);
 
+typedef void visitFunc(void* ptr);
+
 #define c(tok) printf("%c\n", tok);
 #define d(tok) printf("%d\n", tok);
 #define ld(tok) printf("%ld\n", tok);

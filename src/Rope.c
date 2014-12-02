@@ -1,42 +1,64 @@
 #include "Rope.h"
 
+char* concatstring(char* a, char* b);
+
 Rope* NewRope(char* str) {
     Rope* R = malloc(sizeof(Rope));
-    R->Value = str;
-    R->Weight = strlen(str);
+    R->Value = malloc((strlen(str) + 1));
+    strcpy(R->Value, str);
     return Adjust(R);
 }
 
 Rope* Adjust(Rope* R) {
+    R->Weight = strlen(R->Value);
     if (R->Weight > Lim) {
-        R->Left = NewRope(SubString(R->Value, 0, R->Weight / 2));
-        R->Right = NewRope(SubString(R->Value, R->Weight / 2, R->Weight));
-        R->Weight = R->Weight / 2;
+        char* a = SubString(R->Value, 0, R->Weight / 2);
+        char* b = SubString(R->Value, R->Weight / 2, R->Weight);
+
+        if (strlen(a) != 0) {
+            R->Left = NewRope(a);
+        }
+
+        if (strlen(b) != 0) {
+            R->Right = NewRope(b);
+        }
+
+        R->Weight /= 2;
         R->Value = "";
     }
 
     return R;
 }
 
-char* InsertString(char* string, char* snippet, int loc) {
-    char* tmp = malloc(sizeof(char) * loc);
-    strncpy(tmp, string, loc);
+char* InsertString(char* string, char* snippet, long loc) {
+    char* tmp = malloc(loc + 1);
+    strcpy(tmp, string);
     char* tmp2 = SubString(string, loc, strlen(string));
-    char* newstring = malloc(sizeof(char) * (strlen(string) + strlen(snippet)));
-    strncat(newstring, tmp, strlen(tmp));
-    strncat(newstring, snippet, strlen(snippet));
-    strncat(newstring, tmp2, strlen(tmp2));
+    char* newstring = malloc((strlen(string) + strlen(snippet)) + 1);
+    strcat(newstring, tmp);
+    strcat(newstring, snippet);
+    strcat(newstring, tmp2);
     return newstring;
 }
 
-char* Split(Rope* R, int s, int e) {
+char* Split(Rope* R, long s, long e) {
     return SubString(String(R), s, e);
 }
 
+long TotalWeight(Rope* R) {
+    long weight = R->Weight;
+
+    if (R->Right != NULL) {
+        weight += R->Right->Weight;
+    } else if (R->Right == NULL && R->Value != "") {
+        weight += strlen(R->Value);
+    }
+}
+
 Rope* ConCat(Rope* R1, Rope* R2) {
-    char* tmp = malloc(sizeof(char) * 2 * (R1->Weight + R2->Weight));
-    strncat(tmp, String(R1), strlen(String(R1)));
-    strncat(tmp, String(R2), strlen(String(R2)));
+    char* tmp = malloc((TotalWeight(R1) + TotalWeight(R2)) + 1);
+    strcpy(tmp, String(R1));
+    strcat(tmp, String(R2));
     return NewRope(tmp);
 }
 
@@ -45,48 +67,34 @@ Rope* Rebalance(Rope* R) {
     return NewRope(rope);
 }
 
+
 char* String(Rope* R) {
-    char* strx = malloc(sizeof(char) * 2 * R->Weight);
 
-    if (R->Value == "" && R->Left != NULL) {
-        strncat(strx, String(R->Left), strlen(String(R->Left)));
-    }
-
-    if (R->Value == "" && R->Right != NULL) {
-        strncat(strx, String(R->Right), strlen(String(R->Right)));
+    if (R->Value != "") {
+        return R->Value;
+    } else {
+        return concatstring(String(R->Left), String(R->Right));
     }
 }
 
-void Insert(Rope* R, char* c, int pos) {
-
-    if (R->Weight > pos) {
-        if (R->Left != NULL) {
-            Insert(R->Left, c, pos);
-
-            if (R->Right != NULL) {
-                R->Weight = R->Weight + R->Right->Weight;
-            }
-        } else {
-            R->Value = InsertString(R->Value, c, pos);
-            R->Weight = strlen(R->Value);
-        }
-    } else {
+void Insert(Rope* R, char* c, long pos) {
+    if (R->Weight < pos) {
         if (R->Right != NULL) {
             Insert(R->Right, c, pos - R->Weight);
-
-            if (R->Right != NULL) {
-                R->Weight = R->Right->Weight;
-            }
+        }
+    } else {
+        if (R->Left != NULL) {
+            Insert(R->Left, c, pos);
         } else {
-            R->Value = InsertString(R->Value, c, pos);
-            R->Weight = strlen(R->Value);
+            InsertString(R->Value, c, pos);
         }
     }
 }
 
-char* SubString(char* str, int s, int e) {
-    char* newstring = malloc(sizeof(char) * (e - s));
-    int pointer = 0;
+char* SubString(char* str, long s, long e) {
+    char* newstring;
+    newstring = malloc((e - s) + 1);
+    long pointer = 0;
 
     while (s < e) {
         newstring[pointer] = str[s];
@@ -97,40 +105,69 @@ char* SubString(char* str, int s, int e) {
     return newstring;
 }
 
-char Index(Rope* R, int pos) {
-    if (R->Weight > pos) {
-        if (R->Left != NULL) {
-            Index(R->Left, pos);
-        } else {
-            return R->Value[pos];
-        }
-    } else {
+
+char* concatstring(char* a, char* b) {
+    char* ex;
+    if (ex!=NULL) free(ex);
+    ex = malloc((strlen(a) + strlen(b) + 1));
+
+    if (strlen(a) != 0) strcpy(ex, a);
+    else return ex;
+    if (strlen(b) != 0) strcat(ex, b);
+    else return ex;
+
+    return ex;
+}
+
+char Index(Rope* R, long pos) {
+    if (R->Weight < pos) {
         if (R->Right != NULL) {
             Index(R->Right, pos - R->Weight);
+        }
+    } else {
+        if (R->Left != NULL) {
+            Index(R->Left, pos);
         } else {
             return R->Value[pos];
         }
     }
 }
 
-int main() {
-    //    ROPE BUILDER
-    Rope* R = NewRope("GAGAN");
-    Rope* R2 = NewRope("JYOT");
-    Rope* R3 = ConCat(R, R2);
+long main() {
+    //    //    ROPE BUILDER
+    //    Rope* R = NewRope("GAGAN");
+    //    Rope* R2 = NewRope("JYOT");
+    //    Rope* R3 = ConCat(R, R2);
 
     //  SPLIT TEST
-    s(Split(R3, 0, 3))
+    //s(Split(R3, 0, 3))
 
-    //    INSERTION TEST
-    Insert(R, "vv", 0);
+    //    //    INSERTION TEST
+    //    Insert(R, "vv", 0);
 
-    //      INDEX TEST
-    c(Index(R, 3))
-    s(Split(R, 1, 2))
+    //    //      INDEX TEST
+    //    c(Index(R, 3))
+    //    s(Split(R, 1, 2))
 
-    //        STRING TEST
-    char* s = String(R3);
-    printf("%s\n", s);
+    //    //        STRING TEST
+    //    char* s = String(R3);
+    //    printf("%s\n", s);
+    FILE* f = fopen("/home/gagan/stuff/data/big.txt", "r+");
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char* S = malloc(fsize + 1);
+    fread(S, fsize, 1, f);
+    fclose(f);
+    Rope* R = NewRope(S);
+        c(Index(R, 103818668))
+                c(Index(R, 103818669))
+                c(Index(R, 103818670))
+                c(Index(R, 103818671))
+        String(R);
+    ld(strlen(String(R)));
+        s(Split(R, 0, 500))
+    free(S);
+    free(R);
+    return 0;
 }
-

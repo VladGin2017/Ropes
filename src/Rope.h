@@ -1,10 +1,8 @@
 #include "stdio.h"
 #include "string.h"
 #include "malloc.h"
-typedef struct Rope Rope;
-
-typedef struct Rope {
-    Rope* Left, *Right;
+typedef struct _Rope {
+    struct _Rope *Left, *Right;
     int Weight;
     char* Value;
 } Rope;
